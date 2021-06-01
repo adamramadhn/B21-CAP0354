@@ -1,0 +1,8 @@
+freshApple
+freshBanana
+freshLemon
+freshOrange
+rottenApple
+rottenBanana
+rottenLemon
+rottenOrange

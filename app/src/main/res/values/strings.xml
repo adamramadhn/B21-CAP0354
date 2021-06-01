@@ -1,0 +1,21 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">CapstoneProject</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="home" tools:keep="@string/home">Home</string>
+    <string name="detail" tools:keep="@string/detail">Detail</string>
+    <string name="profile" tools:keep="@string/profile">Profile</string>
+    <string name="in_dataset">%s in Dataset</string>
+    <string name="in_good_quality">%1$s%% %2$s in Good Quality</string>
+    <string name="title_home">Home</string>
+    <string name="title_analysis">Analysis</string>
+    <string name="title_profile">Profile</string>
+    <string name="pie_title">Fruits Total in Dataset (in %)</string>
+    <string name="prediction">prediction</string>
+    <string name="predict_img">predict!</string>
+    <string name="pick_img">pick image</string>
+    <string name="img">image</string>
+    <string name="insert_db">insert data</string>
+    <string name="no_db" tools:keep="@string/no_db">No Data Found in Database</string>
+    <string name="no_data">Data is Empty</string>
+</resources>

@@ -1,0 +1,3 @@
+rootProject.name = "CapstoneProject"
+include ':app'
+include ':core'
