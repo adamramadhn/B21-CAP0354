@@ -98,7 +98,6 @@ class HomeFragment : Fragment() {
                     }
                 }
 
-
                 if (!isInDb) {
                     insertedFruit = Fruit(fruitList.size + 1, fruitName, 1, if (isFresh) 1 else 0)
                     insertedFruit?.let {
@@ -159,6 +158,7 @@ class HomeFragment : Fragment() {
             }
             dataSet.colors = brightColors
         }
+
     }
     private fun getImage() {
         val intent = Intent(Intent.ACTION_PICK)

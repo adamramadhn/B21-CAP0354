@@ -1,6 +1,5 @@
 package com.akiramenaide.capstoneproject.ui.detail
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -21,7 +20,6 @@ class DetailAdapter: RecyclerView.Adapter<DetailAdapter.DetailViewHolder>() {
                 judul.text = itemView.context.getString(R.string.in_dataset, fruit.name)
                 skor.text = fruit.total.toString()
                 persen.text = itemView.context.getString(R.string.in_good_quality, fruit.freshPercentage.toString(), fruit.name)
-                Log.d("Element", fruit.name)
                 bindBarChart(fruit)
             }
         }
@@ -40,7 +38,6 @@ class DetailAdapter: RecyclerView.Adapter<DetailAdapter.DetailViewHolder>() {
         if (fruits == null) return
         fruitList.clear()
         fruitList.addAll(fruits)
-        Log.d("RecyclerView", fruits.size.toString())
     }
 
     private fun ListDetailBinding.bindBarChart(fruit: Fruit){

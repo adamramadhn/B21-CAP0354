@@ -28,7 +28,6 @@
                 android:layout_height="180dp"
                 android:layout_margin="@dimen/padding_big"
                 android:visibility="gone"/>
-
         </androidx.cardview.widget.CardView>
 
     </androidx.cardview.widget.CardView>
