@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.akiramenaide.capstoneproject.R
 import com.akiramenaide.capstoneproject.databinding.FragmentHomeBinding
 import com.akiramenaide.capstoneproject.ui.util.MyColors
 import com.akiramenaide.capstoneproject.ui.util.PredictedObject
@@ -72,7 +73,6 @@ class HomeFragment : Fragment() {
                 getImage()
             }
         }
-
         fragmentHomeBinding.homepage.btnPredictImg.setOnClickListener {
             fruitInfo = predictImage()
         }
@@ -91,7 +91,6 @@ class HomeFragment : Fragment() {
                 } else {
                     fruitName = fruitName.removePrefix("rotten")
                 }
-                Log.d(TAG, "$fruitName, $isFresh")
 
                 for (element in fruitList) {
                     if (fruitName.lowercase() == element.name.lowercase()) {
@@ -100,29 +99,19 @@ class HomeFragment : Fragment() {
                             element.freshTotal += 1
                         }
                         isInDb = true
-                        Log.d(TAG, "updating ...")
-                        Log.d(TAG, "${element.total}, ${element.freshTotal}")
                         homeViewModel.updateFruitInfo(element)
                     }
                 }
 
                 if (!isInDb) {
                     insertedFruit = Fruit(fruitList.size + 1, fruitName, 1, if (isFresh) 1 else 0)
-                    Log.d(TAG, "inserting ...")
                     insertedFruit?.let {
                         homeViewModel.insertFruit(it)
                     }
                 }
-
             }
-            Log.d(
-                TAG,
-                "${insertedFruit?.id}, ${insertedFruit?.name}, ${insertedFruit?.total}, ${insertedFruit?.freshTotal}"
-            )
-
         }
     }
-
     private fun drawBarChart(fruits: List<Fruit>) {
         val barValues = ArrayList<BarEntry>()
         val fruitNames = ArrayList<String>()
@@ -163,7 +152,6 @@ class HomeFragment : Fragment() {
         }
         dataSet.colors = brightColors
     }
-
     private fun getClassList(): List<String> {
         val filename = "fruit_labels.txt"
         val inputString = requireActivity().application.assets.open(filename)
@@ -171,13 +159,11 @@ class HomeFragment : Fragment() {
             .use { it.readText() }
         return inputString.split("\n")
     }
-
     private fun getImage() {
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
         startActivityForResult(intent, IMAGE_PICK_CODE)
     }
-
     private fun predictImage(): PredictedObject? {
         myBitmap?.let { originalBitmap ->
             val resizedImg = Bitmap.createScaledBitmap(originalBitmap, 224, 224, true)
@@ -187,97 +173,46 @@ class HomeFragment : Fragment() {
             originalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
             val imageBytes = byteArrayOutputStream.toByteArray()
             val imgString = Base64.encode(imageBytes, Base64.DEFAULT)
-
-//            val decodedData = Base64.decode(imgString, Base64.DEFAULT)
             val utfString = String(imgString, charset("UTF-8"))
-
-//            val input = ByteBuffer.allocateDirect(224 * 224 * 3 * 4).order(ByteOrder.nativeOrder())
-//
-//            for (y in 0 until 224) {
-//                for (x in 0 until 224) {
-//                    val px = resizedImg.getPixel(x, y)
-//
-//                    val r = Color.red(px)
-//                    val g = Color.green(px)
-//                    val b = Color.blue(px)
-//
-//                    val rf = r / 255f
-//                    val gf = g / 255f
-//                    val bf = b / 255f
-//
-//                    input.putFloat(rf)
-//                    input.putFloat(gf)
-//                    input.putFloat(bf)
-//                }
-//            }
-
-            /*
-            for (i in input.array()){
-                Log.d("ByteBuffer", i.toString())
-            }
-             */
-
-            //postString()
-
-//            val model = FruitModel.newInstance(requireContext())
-//            val inputFeature0 = TensorBuffer.createFixedSize(intArrayOf(1, 224, 224, 3), DataType.FLOAT32)
-//
-//            inputFeature0.loadBuffer(input)
-
-//            val myData = PostedData(inputFeature0.floatArray)
-//
-//            val q = inputFeature0.floatArray
-//            val arr = arrayListOf<Float>()
-//            for (x in q){
-//                arr.add(x)
-//            }
-
             val jsonString = "{\"data\": \"$utfString\"}"
-
             Log.d("InputString", jsonString)
-
             postString(jsonString)
             fragmentHomeBinding.progressBar.visibility = View.VISIBLE
-
-
-//            val outputs = model.process(inputFeature0)
-//            val outputFeature0 = outputs.outputFeature0AsTensorBuffer
-
-//            val max = getMax(outputFeature0.floatArray)
-
-//            fragmentHomeBinding.predictionTxt.text = classList[max.index]
-//            fragmentHomeBinding.predictionNumTxt.text = max.similarity.toString()
-
-//            model.close()
-
             return null
         }
-
         return null
     }
-
     private fun postString(buffer: String) {
         val response = homeViewModel.getPredict(buffer)
         response.observe(viewLifecycleOwner, {
             if (it != null) {
+                Log.d("NGEPOT", "Tidak Null Boss")
                 when (it) {
                     is ApiResponse.Empty -> {
                         fragmentHomeBinding.apply {
                             progressBar.visibility - View.GONE
                             viewEmpty.root.visibility = View.VISIBLE
+                            predictImg.root.visibility = View.GONE
+                            viewEmpty.tvEmpty.text = getString(R.string.no_data)
+                            Log.d("INI EMPTY","....")
                         }
                     }
                     is ApiResponse.Success -> {
+                        Log.d("Success", it.data.prediction.toString())
                         fragmentHomeBinding.apply {
                             progressBar.visibility = View.GONE
+                            predictImg.root.visibility = View.VISIBLE
+                            viewEmpty.root.visibility = View.GONE
                             predictImg.myImg.setImageBitmap(resizedBitmap)
                             predictImg.predictionTxt.text = it.data.className
                             predictImg.predictionNumTxt.text = it.data.percentage.toString()
+                            Log.d("INI SUCCESS","....")
                         }
 
                     }
                     is ApiResponse.Error -> {
                         fragmentHomeBinding.apply {
+                            Log.d("INI ERROR",it.errorMessage)
                             progressBar.visibility = View.GONE
                             viewEmpty.root.visibility = View.VISIBLE
                             viewEmpty.tvEmpty.text = it.errorMessage
@@ -287,21 +222,6 @@ class HomeFragment : Fragment() {
             }
         })
     }
-
-//    private fun getMax(arr: FloatArray): PredictedObject {
-//        var ind = 0
-//        var min = 0.0f
-//
-//        for (i in 0..7) {
-//            if (arr[i] > min) {
-//                ind = i
-//                min = arr[i]
-//            }
-//        }
-//
-//        return PredictedObject(ind, min)
-//    }
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -329,11 +249,8 @@ class HomeFragment : Fragment() {
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
-
     companion object {
         const val IMAGE_PICK_CODE = 1000
         const val PERMISSION_CODE = 1001
-        private val TAG = HomeFragment::class.java.simpleName
     }
-
 }

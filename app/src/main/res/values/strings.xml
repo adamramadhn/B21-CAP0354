@@ -11,7 +11,8 @@
     <string name="title_analysis">Analysis</string>
     <string name="title_profile">Profile</string>
     <string name="pie_title">Fruits Total in Dataset (in %)</string>
-    <string name="prediction">prediction</string>
+    <string name="prediction">Prediction : %s</string>
+    <string name="percentage">Percentage : %s</string>
     <string name="predict_img">predict!</string>
     <string name="pick_img">pick image</string>
     <string name="img">image</string>
