@@ -1,7 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">CapstoneProject</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="app_name">Smart Fruit Analyzer</string>
     <string name="home" tools:keep="@string/home">Home</string>
     <string name="detail" tools:keep="@string/detail">Detail</string>
     <string name="profile" tools:keep="@string/profile">Profile</string>
@@ -19,4 +17,35 @@
     <string name="insert_db">insert data</string>
     <string name="no_db" tools:keep="@string/no_db">No Data Found in Database</string>
     <string name="no_data">Data is Empty</string>
+
+    <string name="email">Email</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="register">REGISTER</string>
+    <string name="signup">SIGN UP</string>
+    <string name="already_have_account">ALREADY HAVE AN ACCOUNT? LOGIN HERE</string>
+    <string name="sample_email">alexander22@gmail.com</string>
+    <string name="sample_password">4Lex_y0ww</string>
+    <string name="logout">LOGOUT</string>
+    <string name="save">Save</string>
+    <string name="input_yourname">Input Your Name</string>
+    <string name="your_email">Your Email</string>
+    <string name="phone">Phone</string>
+    <string name="required_name">Name is required!</string>
+    <string name="required_phone">Pleas fill your phone number</string>
+    <string name="verified_email">Verified Email</string>
+    <string name="unverified_email">Unverified Email</string>
+    <string name="masukkan_password_baru">Create New Password</string>
+    <string name="new_password">New password</string>
+    <string name="confirm_new_password">Confirm new password</string>
+    <string name="update">UPDATE</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="masukkan_password_anda">Masukkan Password Anda</string>
+    <string name="change_password">Change Password?</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="update_email">Update Email</string>
+    <string name="new_email">New Email</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="total_fruits_in_database">Total Fruits in Database</string>
 </resources>

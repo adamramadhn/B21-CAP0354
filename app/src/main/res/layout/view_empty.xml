@@ -29,6 +29,7 @@
         android:textSize="@dimen/text_size_mid"
         app:layout_constraintEnd_toEndOf="@+id/lottieAnimationView"
         app:layout_constraintStart_toStartOf="@+id/lottieAnimationView"
-        app:layout_constraintTop_toBottomOf="@+id/lottieAnimationView" />
+        app:layout_constraintTop_toBottomOf="@+id/lottieAnimationView"
+        android:layout_marginBottom="@dimen/padding_big"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

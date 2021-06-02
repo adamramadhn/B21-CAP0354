@@ -2,7 +2,6 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/app_navigation"
     app:startDestination="@id/navigation_home">
 
     <fragment
@@ -21,6 +20,35 @@
         android:id="@+id/navigation_profile"
         android:name="com.akiramenaide.capstoneproject.ui.profile.ProfileFragment"
         android:label="@string/title_profile"
-        tools:layout="@layout/fragment_profile"/>
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/actionChangePassword"
+            app:destination="@id/changePasswordFragment" />
+        <action
+            android:id="@+id/actionUpdateEmail"
+            app:destination="@id/updateEmailFragment" />
+    </fragment>
 
+    <fragment
+        android:id="@+id/changePasswordFragment"
+        android:name="com.akiramenaide.capstoneproject.ui.auth.fragment.ChangePasswordFragment"
+        android:label="fragment_change_password"
+        tools:layout="@layout/fragment_change_password" >
+        <action
+            android:id="@+id/actionPasswordChanged"
+            app:destination="@id/navigation_profile"
+            app:popUpTo="@id/navigation_profile"
+            app:popUpToInclusive="true"/>
+    </fragment>
+    <fragment
+        android:id="@+id/updateEmailFragment"
+        android:name="com.akiramenaide.capstoneproject.ui.auth.fragment.UpdateEmailFragment"
+        android:label="fragment_update_email"
+        tools:layout="@layout/fragment_update_email" >
+        <action
+            android:id="@+id/actionEmailUpdated"
+            app:destination="@id/navigation_profile"
+            app:popUpTo="@id/navigation_profile"
+            app:popUpToInclusive="true"/>
+    </fragment>
 </navigation>

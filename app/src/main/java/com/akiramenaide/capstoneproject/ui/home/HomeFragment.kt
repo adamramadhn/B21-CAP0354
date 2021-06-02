@@ -29,9 +29,9 @@ import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import org.koin.android.viewmodel.ext.android.viewModel
 import java.io.ByteArrayOutputStream
-import kotlin.collections.ArrayList
 
 
+@Suppress("DEPRECATION")
 class HomeFragment : Fragment() {
     private val brightColors = MyColors.brightColorArray
     private lateinit var fragmentHomeBinding: FragmentHomeBinding

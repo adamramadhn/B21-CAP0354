@@ -7,16 +7,14 @@
     tools:context=".ui.detail.DetailFragment">
 
     <LinearLayout
-        android:id="@+id/contraintLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingBottom="@dimen/padding_big"
         tools:context=".ui.home.HomeFragment">
 
-        <include
-            android:id="@+id/homepage"
-            layout="@layout/timeline" />
+        <include layout="@layout/timeline"
+            android:id="@+id/homepage"/>
 
         <include
             android:id="@+id/predict_img"
@@ -29,8 +27,8 @@
             android:visibility="gone" />
 
         <ProgressBar
-            android:layout_gravity="center"
             android:id="@+id/progress_bar"
+            android:layout_gravity="center"
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
