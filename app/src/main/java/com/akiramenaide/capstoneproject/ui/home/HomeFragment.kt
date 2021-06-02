@@ -61,6 +61,9 @@ class HomeFragment : Fragment() {
         })
 
         fragmentHomeBinding.homepage.btnPickImg.setOnClickListener {
+            fragmentHomeBinding.predictImg.predictionNumTxt.visibility = View.GONE
+            fragmentHomeBinding.predictImg.predictionTxt.visibility = View.GONE
+            fragmentHomeBinding.viewEmpty.root.visibility = View.GONE
             if (requireActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
                 val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
                 requestPermissions(permissions, PERMISSION_CODE)
@@ -72,7 +75,7 @@ class HomeFragment : Fragment() {
 
         fragmentHomeBinding.homepage.btnPredictImg.setOnClickListener {
             predictImage()
-            fragmentHomeBinding.predictImg.root.visibility =View.GONE
+            fragmentHomeBinding.predictImg.root.visibility = View.GONE
         }
 
         fragmentHomeBinding.homepage.btnInsertDb.setOnClickListener {
@@ -181,7 +184,6 @@ class HomeFragment : Fragment() {
             val imgString = Base64.encode(imageBytes, Base64.DEFAULT)
             val utfString = String(imgString, charset("UTF-8"))
             val jsonString = "{\"data\": \"$utfString\"}"
-            Log.d("InputString", jsonString)
             postString(jsonString)
             fragmentHomeBinding.progressBar.visibility = View.VISIBLE
         }
@@ -199,25 +201,28 @@ class HomeFragment : Fragment() {
                             viewEmpty.root.visibility = View.VISIBLE
                             predictImg.root.visibility = View.GONE
                             viewEmpty.tvEmpty.text = getString(R.string.no_data)
-                            Log.d("INI EMPTY", "....")
                         }
                     }
                     is ApiResponse.Success -> {
                         Log.d("Success", it.data.prediction.toString())
                         fragmentHomeBinding.apply {
+                            predictImg.predictionNumTxt.visibility = View.VISIBLE
+                            predictImg.predictionTxt.visibility = View.VISIBLE
                             progressBar.visibility = View.GONE
                             predictImg.root.visibility = View.VISIBLE
                             viewEmpty.root.visibility = View.GONE
                             predictImg.myImg.setImageBitmap(resizedBitmap)
-                            predictImg.predictionTxt.text = it.data.className
-                            predictImg.predictionNumTxt.text = it.data.percentage.toString()
-                            Log.d("INI SUCCESS", "....")
-                            fruitInfo = PredictedObject(it.data.className, it.data.percentage)
+                            if (it.data.className.trim() == "unknown") {
+                                predictImg.predictionTxt.text = getString(R.string.not_iddentified)
+                            } else {
+                                predictImg.predictionTxt.text = getString(R.string.prediction,it.data.className)
+                                predictImg.predictionNumTxt.text = getString(R.string.percentage,"${it.data.percentage.toString().trim()}%")
+                                fruitInfo = PredictedObject(it.data.className, it.data.percentage)
+                            }
                         }
                     }
                     is ApiResponse.Error -> {
                         fragmentHomeBinding.apply {
-                            Log.d("INI ERROR", it.errorMessage)
                             progressBar.visibility = View.GONE
                             viewEmpty.root.visibility = View.VISIBLE
                             viewEmpty.tvEmpty.text = it.errorMessage
@@ -249,10 +254,9 @@ class HomeFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE) {
             val img = data?.data
-            Log.d("URI", img.toString())
             @Suppress("DEPRECATION")
             myBitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, img)
-            fragmentHomeBinding.predictImg.root.visibility =View.VISIBLE
+            fragmentHomeBinding.predictImg.root.visibility = View.VISIBLE
             fragmentHomeBinding.predictImg.myImg.apply {
                 visibility = View.VISIBLE
                 setImageBitmap(myBitmap)

@@ -48,6 +48,7 @@ class ProfileFragment : Fragment() {
         val userData = auth.currentUser
         if (userData != null) {
             profileBinding.apply {
+                userData.reload()
                 if (userData.photoUrl != null) {
                     Picasso.get().load(userData.photoUrl).into(ivProfile)
                 } else {
@@ -62,11 +63,6 @@ class ProfileFragment : Fragment() {
                 } else {
                     icUnverified.visibility = View.VISIBLE
                     icVerified.visibility = View.GONE
-                }
-                if (userData.phoneNumber.isNullOrEmpty()) {
-                    etPhone.setText(getString(R.string.required_phone))
-                } else {
-                    etPhone.setText(userData.phoneNumber)
                 }
             }
 

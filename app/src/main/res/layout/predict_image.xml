@@ -6,6 +6,7 @@
     android:layout_marginBottom="@dimen/padding_very_big">
 
     <ImageView
+
         android:id="@+id/my_img"
         android:layout_width="300dp"
         android:layout_height="300dp"

@@ -9,8 +9,8 @@
     <string name="title_analysis">Analysis</string>
     <string name="title_profile">Profile</string>
     <string name="pie_title">Fruits Total in Dataset (in %)</string>
-    <string name="prediction">Prediction : %s</string>
-    <string name="percentage">Percentage : %s</string>
+    <string name="prediction">Prediction: %s</string>
+    <string name="percentage">Similarity: %s</string>
     <string name="predict_img">predict!</string>
     <string name="pick_img">pick image</string>
     <string name="img">image</string>
@@ -27,13 +27,10 @@
     <string name="already_have_account">ALREADY HAVE AN ACCOUNT? LOGIN HERE</string>
     <string name="sample_email">alexander22@gmail.com</string>
     <string name="sample_password">4Lex_y0ww</string>
-    <string name="logout">LOGOUT</string>
-    <string name="save">Save</string>
+    <string name="logout">Logout</string>
     <string name="input_yourname">Input Your Name</string>
     <string name="your_email">Your Email</string>
-    <string name="phone">Phone</string>
     <string name="required_name">Name is required!</string>
-    <string name="required_phone">Pleas fill your phone number</string>
     <string name="verified_email">Verified Email</string>
     <string name="unverified_email">Unverified Email</string>
     <string name="masukkan_password_baru">Create New Password</string>
@@ -41,11 +38,13 @@
     <string name="confirm_new_password">Confirm new password</string>
     <string name="update">UPDATE</string>
     <string name="confirm_password">Confirm Password</string>
-    <string name="masukkan_password_anda">Masukkan Password Anda</string>
+    <string name="masukkan_password_anda">Input your password</string>
     <string name="change_password">Change Password?</string>
     <string name="delete_account">Delete Account</string>
-    <string name="update_email">Update Email</string>
     <string name="new_email">New Email</string>
     <string name="reset_password">Reset Password</string>
     <string name="total_fruits_in_database">Total Fruits in Database</string>
+    <string name="not_iddentified">Not Identified</string>
+    <string name="uodate_email">Update Email</string>
+    <string name="update_password">Update password</string>
 </resources>
