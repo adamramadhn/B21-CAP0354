@@ -196,6 +196,7 @@ class HomeFragment : Fragment() {
                 Log.d("NGEPOT", "Tidak Null Boss")
                 when (it) {
                     is ApiResponse.Empty -> {
+                        fruitInfo = null
                         fragmentHomeBinding.apply {
                             progressBar.visibility - View.GONE
                             viewEmpty.root.visibility = View.VISIBLE
@@ -213,15 +214,22 @@ class HomeFragment : Fragment() {
                             viewEmpty.root.visibility = View.GONE
                             predictImg.myImg.setImageBitmap(resizedBitmap)
                             if (it.data.className.trim() == "unknown") {
+                                fruitInfo = null
+                                predictImg.predictionNumTxt.visibility = View.GONE
                                 predictImg.predictionTxt.text = getString(R.string.not_iddentified)
                             } else {
-                                predictImg.predictionTxt.text = getString(R.string.prediction,it.data.className)
-                                predictImg.predictionNumTxt.text = getString(R.string.percentage,"${it.data.percentage.toString().trim()}%")
+                                predictImg.predictionTxt.text =
+                                    getString(R.string.prediction, it.data.className)
+                                predictImg.predictionNumTxt.text = getString(
+                                    R.string.percentage,
+                                    "${it.data.percentage.toString().trim()}%"
+                                )
                                 fruitInfo = PredictedObject(it.data.className, it.data.percentage)
                             }
                         }
                     }
                     is ApiResponse.Error -> {
+                        fruitInfo = null
                         fragmentHomeBinding.apply {
                             progressBar.visibility = View.GONE
                             viewEmpty.root.visibility = View.VISIBLE
