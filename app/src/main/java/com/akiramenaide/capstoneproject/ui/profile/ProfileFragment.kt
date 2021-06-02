@@ -1,6 +1,7 @@
 package com.akiramenaide.capstoneproject.ui.profile
 
 import android.app.Activity
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -11,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.akiramenaide.capstoneproject.R
@@ -49,7 +51,7 @@ class ProfileFragment : Fragment() {
                 if (userData.photoUrl != null) {
                     Picasso.get().load(userData.photoUrl).into(ivProfile)
                 } else {
-                    Picasso.get().load("https://picsum.photos/id/316/200").into(ivProfile)
+                    Picasso.get().load(R.drawable.ic_person).into(ivProfile)
                 }
                 etName.setText(userData.displayName)
                 etEmail.setText(userData.email)
@@ -66,7 +68,6 @@ class ProfileFragment : Fragment() {
                 } else {
                     etPhone.setText(userData.phoneNumber)
                 }
-
             }
 
         }
@@ -76,17 +77,36 @@ class ProfileFragment : Fragment() {
             }
         }
         profileBinding.btnUnregis.setOnClickListener {
-            userData?.delete()?.addOnCompleteListener {
-                if (it.isSuccessful) {
-                    Toast.makeText(activity, "Unregistered", Toast.LENGTH_SHORT).show()
-                    auth.signOut()
-                    Intent(activity, LoginActivity::class.java).also { destroy ->
-                        destroy.flags =
-                            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        startActivity(destroy)
+            val builder = AlertDialog.Builder(it.context)
+
+            with(builder)
+            {
+                setTitle("Delete Your Account")
+                setMessage("Are you sure?")
+                setPositiveButton("OK") { _: DialogInterface, _: Int ->
+                    userData?.delete()?.addOnCompleteListener { del ->
+                        if (del.isSuccessful) {
+                            Toast.makeText(activity, "Unregistered", Toast.LENGTH_SHORT).show()
+                            auth.signOut()
+                            Intent(activity, LoginActivity::class.java).also { destroy ->
+                                destroy.flags =
+                                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                startActivity(destroy)
+                            }
+                        } else {
+                            Toast.makeText(
+                                activity,
+                                "${del.exception?.message}",
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                        }
                     }
                 }
+                setNegativeButton(android.R.string.no) { _: DialogInterface, _: Int -> return@setNegativeButton }
+                show()
             }
+
         }
         profileBinding.btnUpdate.setOnClickListener {
             val image = when {
@@ -173,6 +193,7 @@ class ProfileFragment : Fragment() {
             Navigation.findNavController(it).navigate(actionUpdateEmail)
         }
     }
+
     private fun getImage() {
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
