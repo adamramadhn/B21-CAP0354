@@ -31,9 +31,11 @@
                 android:textSize="20sp" />
 
             <com.github.mikephil.charting.charts.BarChart
+                android:layout_marginTop="@dimen/padding_big"
                 android:id="@+id/bar_chart"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
+                android:layout_gravity="center|bottom"
                 android:layout_margin="@dimen/padding_big"
                 android:visibility="gone" />
         </androidx.cardview.widget.CardView>

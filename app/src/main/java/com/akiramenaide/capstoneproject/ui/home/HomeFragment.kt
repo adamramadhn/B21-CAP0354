@@ -66,10 +66,13 @@ class HomeFragment : Fragment() {
                 requestPermissions(permissions, PERMISSION_CODE)
             } else {
                 getImage()
+
             }
         }
+
         fragmentHomeBinding.homepage.btnPredictImg.setOnClickListener {
             predictImage()
+            fragmentHomeBinding.predictImg.root.visibility =View.GONE
         }
 
         fragmentHomeBinding.homepage.btnInsertDb.setOnClickListener {
@@ -107,8 +110,9 @@ class HomeFragment : Fragment() {
             }
         }
     }
+
     private fun drawBarChart(fruits: List<Fruit>) {
-        if (fruits.isNotEmpty()){
+        if (fruits.isNotEmpty()) {
             barChart.visibility = View.VISIBLE
             val barValues = ArrayList<BarEntry>()
             val fruitNames = ArrayList<String>()
@@ -160,16 +164,17 @@ class HomeFragment : Fragment() {
         }
 
     }
+
     private fun getImage() {
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
         startActivityForResult(intent, IMAGE_PICK_CODE)
     }
+
     private fun predictImage() {
         myBitmap?.let { originalBitmap ->
             val resizedImg = Bitmap.createScaledBitmap(originalBitmap, 224, 224, true)
             resizedBitmap = resizedImg
-
             val byteArrayOutputStream = ByteArrayOutputStream()
             originalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
             val imageBytes = byteArrayOutputStream.toByteArray()
@@ -181,6 +186,7 @@ class HomeFragment : Fragment() {
             fragmentHomeBinding.progressBar.visibility = View.VISIBLE
         }
     }
+
     private fun postString(buffer: String) {
         val response = homeViewModel.getPredict(buffer)
         response.observe(viewLifecycleOwner, {
@@ -193,7 +199,7 @@ class HomeFragment : Fragment() {
                             viewEmpty.root.visibility = View.VISIBLE
                             predictImg.root.visibility = View.GONE
                             viewEmpty.tvEmpty.text = getString(R.string.no_data)
-                            Log.d("INI EMPTY","....")
+                            Log.d("INI EMPTY", "....")
                         }
                     }
                     is ApiResponse.Success -> {
@@ -205,13 +211,13 @@ class HomeFragment : Fragment() {
                             predictImg.myImg.setImageBitmap(resizedBitmap)
                             predictImg.predictionTxt.text = it.data.className
                             predictImg.predictionNumTxt.text = it.data.percentage.toString()
-                            Log.d("INI SUCCESS","....")
+                            Log.d("INI SUCCESS", "....")
                             fruitInfo = PredictedObject(it.data.className, it.data.percentage)
                         }
                     }
                     is ApiResponse.Error -> {
                         fragmentHomeBinding.apply {
-                            Log.d("INI ERROR",it.errorMessage)
+                            Log.d("INI ERROR", it.errorMessage)
                             progressBar.visibility = View.GONE
                             viewEmpty.root.visibility = View.VISIBLE
                             viewEmpty.tvEmpty.text = it.errorMessage
@@ -221,6 +227,7 @@ class HomeFragment : Fragment() {
             }
         })
     }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -245,9 +252,16 @@ class HomeFragment : Fragment() {
             Log.d("URI", img.toString())
             @Suppress("DEPRECATION")
             myBitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, img)
+            fragmentHomeBinding.predictImg.root.visibility =View.VISIBLE
+            fragmentHomeBinding.predictImg.myImg.apply {
+                visibility = View.VISIBLE
+                setImageBitmap(myBitmap)
+            }
+
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
+
     companion object {
         const val IMAGE_PICK_CODE = 1000
         const val PERMISSION_CODE = 1001
