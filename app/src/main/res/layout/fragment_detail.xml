@@ -10,9 +10,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/padding_giant"
         android:nestedScrollingEnabled="true"
-        android:background="@color/onSecondary">
+        android:paddingBottom="@dimen/padding_giant">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/card_view"

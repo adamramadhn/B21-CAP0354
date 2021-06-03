@@ -14,8 +14,7 @@ class RemoteDataSource(private val apiService: ApiService) {
         return flow {
             try {
                 val response = apiService.getPredict(predict)
-                val dataResponse = response
-                if (dataResponse.className.isNotEmpty()) {
+                if (response.className.isNotEmpty()) {
                     emit(ApiResponse.Success(response))
                 } else {
                     emit(ApiResponse.Empty)

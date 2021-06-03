@@ -1,9 +1,11 @@
 <component name="libraryTable">
   <library name="Gradle: io.insert-koin:koin-android:2.1.6@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2d65fed3ed71f8ed3c301eb1605a2d03/jetified-koin-android-2.1.6/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2d65fed3ed71f8ed3c301eb1605a2d03/jetified-koin-android-2.1.6/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2d65fed3ed71f8ed3c301eb1605a2d03/jetified-koin-android-2.1.6/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a88ed8656d2fa1116ff3e7c1991037d1/jetified-koin-android-2.1.6/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/27d7f024e432f094ce6a43e50c8a3a47/jetified-koin-android-2.1.6/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/27d7f024e432f094ce6a43e50c8a3a47/jetified-koin-android-2.1.6/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/27d7f024e432f094ce6a43e50c8a3a47/jetified-koin-android-2.1.6/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.insert-koin/koin-android/2.1.6/e72def66c9245a4f2402e3b3925da230635b4972/koin-android-2.1.6-javadoc.jar!/" />

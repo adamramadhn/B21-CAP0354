@@ -61,8 +61,8 @@ class HomeFragment : Fragment() {
         })
 
         fragmentHomeBinding.homepage.btnPickImg.setOnClickListener {
-            fragmentHomeBinding.predictImg.predictionNumTxt.visibility = View.GONE
-            fragmentHomeBinding.predictImg.predictionTxt.visibility = View.GONE
+//            fragmentHomeBinding.predictImg.predictionNumTxt.visibility = View.GONE
+//            fragmentHomeBinding.predictImg.predictionTxt.visibility = View.GONE
             fragmentHomeBinding.viewEmpty.root.visibility = View.GONE
             if (requireActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
                 val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -74,8 +74,18 @@ class HomeFragment : Fragment() {
         }
 
         fragmentHomeBinding.homepage.btnPredictImg.setOnClickListener {
-            predictImage()
-            fragmentHomeBinding.predictImg.root.visibility = View.GONE
+            when {
+                myBitmap != null && fruitInfo != null -> {
+                    Toast.makeText(activity, "Image was predicted", Toast.LENGTH_SHORT).show()
+                }
+                myBitmap == null -> {
+                    Toast.makeText(activity, "Please insert an Image", Toast.LENGTH_SHORT).show()
+                }
+                myBitmap != null && fruitInfo == null -> {
+                    predictImage()
+                    fragmentHomeBinding.predictImg.root.visibility = View.GONE
+                }
+            }
         }
 
         fragmentHomeBinding.homepage.btnInsertDb.setOnClickListener {
@@ -83,32 +93,37 @@ class HomeFragment : Fragment() {
             var isInDb = false
 
             fruit?.let { myFruit ->
-                var fruitName = myFruit.className
-                var isFresh = false
+                if (myFruit.className != "unknown"){
+                    var fruitName = myFruit.className
+                    var isFresh = false
 
-                if (fruitName.contains("fresh")) {
-                    fruitName = fruitName.removePrefix("fresh")
-                    isFresh = true
-                } else {
-                    fruitName = fruitName.removePrefix("rotten")
-                }
+                    if (fruitName.contains("fresh")) {
+                        fruitName = fruitName.removePrefix("fresh")
+                        isFresh = true
+                    } else {
+                        fruitName = fruitName.removePrefix("rotten")
+                    }
 
-                for (element in fruitList) {
-                    if (fruitName.lowercase() == element.name.lowercase()) {
-                        element.total += 1
-                        if (isFresh) {
-                            element.freshTotal += 1
+                    for (element in fruitList) {
+                        if (fruitName.lowercase() == element.name.lowercase()) {
+                            element.total += 1
+                            if (isFresh) {
+                                element.freshTotal += 1
+                            }
+                            isInDb = true
+                            homeViewModel.updateFruitInfo(element)
                         }
-                        isInDb = true
-                        homeViewModel.updateFruitInfo(element)
+                    }
+
+                    if (!isInDb) {
+                        insertedFruit = Fruit(fruitList.size + 1, fruitName, 1, if (isFresh) 1 else 0)
+                        insertedFruit?.let {
+                            homeViewModel.insertFruit(it)
+                        }
                     }
                 }
-
-                if (!isInDb) {
-                    insertedFruit = Fruit(fruitList.size + 1, fruitName, 1, if (isFresh) 1 else 0)
-                    insertedFruit?.let {
-                        homeViewModel.insertFruit(it)
-                    }
+                else{
+                    Toast.makeText(activity,"Data not valid!",Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -214,7 +229,7 @@ class HomeFragment : Fragment() {
                             viewEmpty.root.visibility = View.GONE
                             predictImg.myImg.setImageBitmap(resizedBitmap)
                             if (it.data.className.trim() == "unknown") {
-                                fruitInfo = null
+                                fruitInfo = PredictedObject("unknown",0f)
                                 predictImg.predictionNumTxt.visibility = View.GONE
                                 predictImg.predictionTxt.text = getString(R.string.not_iddentified)
                             } else {
@@ -269,7 +284,7 @@ class HomeFragment : Fragment() {
                 visibility = View.VISIBLE
                 setImageBitmap(myBitmap)
             }
-
+            fruitInfo = null
         }
         super.onActivityResult(requestCode, resultCode, data)
     }

@@ -22,7 +22,6 @@ class FruitRepository(
         localDataSource.getAllFruits().map {
             DataMapper.mapEntitiesToDomain(it)
         }
-
     override fun insertFruit(fruit: Fruit) =
         appExecutors.diskIO().execute { localDataSource.insertFruit(DataMapper.mapDomainToEntity(fruit)) }
 
