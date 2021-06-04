@@ -20,6 +20,7 @@ import com.akiramenaide.capstoneproject.databinding.FragmentProfileBinding
 import com.akiramenaide.capstoneproject.ui.auth.LoginActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
@@ -32,6 +33,7 @@ class ProfileFragment : Fragment() {
     private lateinit var profileBinding: FragmentProfileBinding
     private lateinit var imageUri: Uri
     private lateinit var auth: FirebaseAuth
+    private lateinit var database: FirebaseDatabase
     private var myBitmap: Bitmap? = null
 
     override fun onCreateView(
@@ -45,6 +47,7 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         auth = FirebaseAuth.getInstance()
+        database = FirebaseDatabase.getInstance()
         val userData = auth.currentUser
         if (userData != null) {
             profileBinding.apply {

@@ -27,6 +27,10 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import org.koin.android.viewmodel.ext.android.viewModel
 import java.io.ByteArrayOutputStream
 
@@ -53,12 +57,15 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val database = FirebaseDatabase.getInstance().reference
         barChart = fragmentHomeBinding.homepage.barChart
         barChart.visibility = View.GONE
         homeViewModel.getAllFruits().observe(viewLifecycleOwner, {
             fruitList = it
             drawBarChart(fruitList)
         })
+        //pake ini
+
 
         fragmentHomeBinding.homepage.btnPickImg.setOnClickListener {
 //            fragmentHomeBinding.predictImg.predictionNumTxt.visibility = View.GONE
@@ -89,11 +96,12 @@ class HomeFragment : Fragment() {
         }
 
         fragmentHomeBinding.homepage.btnInsertDb.setOnClickListener {
+
             val fruit = fruitInfo
             var isInDb = false
 
             fruit?.let { myFruit ->
-                if (myFruit.className != "unknown"){
+                if (myFruit.className != "unknown") {
                     var fruitName = myFruit.className
                     var isFresh = false
 
@@ -112,21 +120,41 @@ class HomeFragment : Fragment() {
                             }
                             isInDb = true
                             homeViewModel.updateFruitInfo(element)
+                            database.child(myFruit.className.trim())
+                                .setValue(Fruit("${element.total}"))
                         }
                     }
 
                     if (!isInDb) {
-                        insertedFruit = Fruit(fruitList.size + 1, fruitName, 1, if (isFresh) 1 else 0)
+                        insertedFruit =
+                            Fruit(fruitList.size + 1, fruitName, 1, if (isFresh) 1 else 0)
                         insertedFruit?.let {
                             homeViewModel.insertFruit(it)
                         }
                     }
-                }
-                else{
-                    Toast.makeText(activity,"Data not valid!",Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(activity, "Data not valid!", Toast.LENGTH_SHORT).show()
                 }
             }
         }
+        //GetData
+        val getData = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val sb = StringBuilder()
+                for (i in snapshot.children) {
+                    var fruitQuality = i.child("total").value
+                    var x = i.key
+                    sb.append("Classification:\t${i.key}\n$x Quantity:\t$fruitQuality\n\n")
+                }
+                fragmentHomeBinding.homepage.tvCoba.text = sb
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        }
+        database.addValueEventListener(getData)
+        database.addListenerForSingleValueEvent(getData)
     }
 
     private fun drawBarChart(fruits: List<Fruit>) {
@@ -229,7 +257,7 @@ class HomeFragment : Fragment() {
                             viewEmpty.root.visibility = View.GONE
                             predictImg.myImg.setImageBitmap(resizedBitmap)
                             if (it.data.className.trim() == "unknown") {
-                                fruitInfo = PredictedObject("unknown",0f)
+                                fruitInfo = PredictedObject("unknown", 0f)
                                 predictImg.predictionNumTxt.visibility = View.GONE
                                 predictImg.predictionTxt.text = getString(R.string.not_iddentified)
                             } else {
@@ -292,5 +320,13 @@ class HomeFragment : Fragment() {
     companion object {
         const val IMAGE_PICK_CODE = 1000
         const val PERMISSION_CODE = 1001
+    }
+}
+
+class Fruit {
+    var total = ""
+
+    constructor(total: String) {
+        this.total = total
     }
 }
