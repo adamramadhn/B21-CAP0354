@@ -57,16 +57,12 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val database = FirebaseDatabase.getInstance().reference
         barChart = fragmentHomeBinding.homepage.barChart
         barChart.visibility = View.GONE
         homeViewModel.getAllFruits().observe(viewLifecycleOwner, {
             fruitList = it
             drawBarChart(fruitList)
         })
-        //pake ini
-
-
         fragmentHomeBinding.homepage.btnPickImg.setOnClickListener {
 //            fragmentHomeBinding.predictImg.predictionNumTxt.visibility = View.GONE
 //            fragmentHomeBinding.predictImg.predictionTxt.visibility = View.GONE
@@ -137,24 +133,7 @@ class HomeFragment : Fragment() {
                 }
             }
         }
-        //GetData
-        val getData = object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val sb = StringBuilder()
-                for (i in snapshot.children) {
-                    var fruitQuality = i.child("total").value
-                    var x = i.key
-                    sb.append("Classification:\t${i.key}\n$x Quantity:\t$fruitQuality\n\n")
-                }
-                fragmentHomeBinding.homepage.tvCoba.text = sb
-            }
 
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-        }
-        database.addValueEventListener(getData)
-        database.addListenerForSingleValueEvent(getData)
     }
 
     private fun drawBarChart(fruits: List<Fruit>) {
@@ -323,10 +302,4 @@ class HomeFragment : Fragment() {
     }
 }
 
-class Fruit {
-    var total = ""
-
-    constructor(total: String) {
-        this.total = total
-    }
-}
+class Fruit(var total: String)
