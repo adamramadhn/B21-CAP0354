@@ -8,11 +8,10 @@
     <ImageView
 
         android:id="@+id/my_img"
-        android:layout_width="300dp"
+        android:layout_width="350dp"
         android:layout_height="300dp"
         android:layout_margin="16dp"
         android:layout_marginTop="16dp"
-        android:background="@color/primaryVariant"
         android:contentDescription="@string/img"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

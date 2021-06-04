@@ -57,6 +57,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val  database = FirebaseDatabase.getInstance().reference
         barChart = fragmentHomeBinding.homepage.barChart
         barChart.visibility = View.GONE
         homeViewModel.getAllFruits().observe(viewLifecycleOwner, {
@@ -97,7 +98,7 @@ class HomeFragment : Fragment() {
             var isInDb = false
 
             fruit?.let { myFruit ->
-                if (myFruit.className != "unknown") {
+                if (myFruit.className != "uncategorized") {
                     var fruitName = myFruit.className
                     var isFresh = false
 
@@ -116,8 +117,9 @@ class HomeFragment : Fragment() {
                             }
                             isInDb = true
                             homeViewModel.updateFruitInfo(element)
-                            database.child(myFruit.className.trim())
-                                .setValue(Fruit("${element.total}"))
+                            //kirim ke database cloud
+                            database.child(fruitName.trim())
+                                .setValue(Fruit("${element.total}","${element.freshTotal}"))
                         }
                     }
 
@@ -127,12 +129,33 @@ class HomeFragment : Fragment() {
                         insertedFruit?.let {
                             homeViewModel.insertFruit(it)
                         }
+                        database.child(fruitName.trim())
+                            .setValue(Fruit("1","${if (isFresh) 1 else 0}"))
                     }
                 } else {
                     Toast.makeText(activity, "Data not valid!", Toast.LENGTH_SHORT).show()
                 }
             }
         }
+
+        //GetData
+        val getData = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val sb = StringBuilder()
+                for (i in snapshot.children) {
+                    val jumlah = i.child("total").value
+                    sb.append("Classification:\t${i.key}\n${i.key} Quantity:\t$jumlah\n\n")
+                }
+                fragmentHomeBinding.homepage.tvCoba.text = sb
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+
+        }
+        database.addValueEventListener(getData)
+        database.addListenerForSingleValueEvent(getData)
 
     }
 
@@ -235,8 +258,8 @@ class HomeFragment : Fragment() {
                             predictImg.root.visibility = View.VISIBLE
                             viewEmpty.root.visibility = View.GONE
                             predictImg.myImg.setImageBitmap(resizedBitmap)
-                            if (it.data.className.trim() == "unknown") {
-                                fruitInfo = PredictedObject("unknown", 0f)
+                            if (it.data.className.trim() == "uncategorized") {
+                                fruitInfo = PredictedObject("uncategorized", 0f)
                                 predictImg.predictionNumTxt.visibility = View.GONE
                                 predictImg.predictionTxt.text = getString(R.string.not_iddentified)
                             } else {
@@ -302,4 +325,4 @@ class HomeFragment : Fragment() {
     }
 }
 
-class Fruit(var total: String)
+class Fruit(var total: String, var freshTotal:String)

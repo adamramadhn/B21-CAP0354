@@ -47,15 +47,15 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         auth = FirebaseAuth.getInstance()
+
         database = FirebaseDatabase.getInstance()
         val userData = auth.currentUser
         userData?.reload()
         profileBinding.apply {
             if (userData != null) {
-                if (userData.photoUrl != null) {
-                    Picasso.get().load(userData.photoUrl).into(ivProfile)
-                } else {
-                    Picasso.get().load("https://picsum.photos/200/300").into(ivProfile)
+                when (userData.photoUrl) {
+                    null -> Picasso.get().load("https://picsum.photos/200/300").into(ivProfile)
+                    else -> Picasso.get().load(userData.photoUrl).into(ivProfile)
                 }
                 etName.setText(userData.displayName)
                 etEmail.setText(userData.email)
