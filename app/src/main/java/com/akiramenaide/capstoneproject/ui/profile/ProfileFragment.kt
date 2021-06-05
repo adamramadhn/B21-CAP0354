@@ -33,7 +33,6 @@ class ProfileFragment : Fragment() {
     private lateinit var profileBinding: FragmentProfileBinding
     private lateinit var imageUri: Uri
     private lateinit var auth: FirebaseAuth
-    private lateinit var database: FirebaseDatabase
     private var myBitmap: Bitmap? = null
 
     override fun onCreateView(
@@ -47,15 +46,15 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         auth = FirebaseAuth.getInstance()
-
-        database = FirebaseDatabase.getInstance()
         val userData = auth.currentUser
-        userData?.reload()
+
         profileBinding.apply {
             if (userData != null) {
-                when (userData.photoUrl) {
-                    null -> Picasso.get().load("https://picsum.photos/200/300").into(ivProfile)
-                    else -> Picasso.get().load(userData.photoUrl).into(ivProfile)
+                userData.reload()
+                if (userData.photoUrl != null) {
+                    Picasso.get().load(userData.photoUrl).into(ivProfile)
+                } else {
+                    Picasso.get().load("https://picsum.photos/200/300").into(ivProfile)
                 }
                 etName.setText(userData.displayName)
                 etEmail.setText(userData.email)
@@ -124,15 +123,24 @@ class ProfileFragment : Fragment() {
                     setPositiveButton("OK") { _: DialogInterface, _: Int ->
                         UserProfileChangeRequest.Builder().setDisplayName(name)
                             .setPhotoUri(image).build().also { changeReq ->
-                                userData?.updateProfile(changeReq)?.addOnCompleteListener {update->
-                                    if (update.isSuccessful) {
-                                        Toast.makeText(activity, "Profile Updated", Toast.LENGTH_SHORT)
-                                            .show()
-                                    } else {
-                                        Toast.makeText(activity, update.exception?.message, Toast.LENGTH_SHORT)
-                                            .show()
+                                userData?.updateProfile(changeReq)
+                                    ?.addOnCompleteListener { update ->
+                                        if (update.isSuccessful) {
+                                            Toast.makeText(
+                                                activity,
+                                                "Profile Updated",
+                                                Toast.LENGTH_SHORT
+                                            )
+                                                .show()
+                                        } else {
+                                            Toast.makeText(
+                                                activity,
+                                                update.exception?.message,
+                                                Toast.LENGTH_SHORT
+                                            )
+                                                .show()
+                                        }
                                     }
-                                }
                             }
                     }
                     setNegativeButton(android.R.string.no) { _: DialogInterface, _: Int -> return@setNegativeButton }
@@ -207,8 +215,9 @@ class ProfileFragment : Fragment() {
         if (requestCode == IMAGE_PICK_CODE && resultCode == Activity.RESULT_OK) {
             val img = data?.data
             myBitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, img)
-            Log.d("GAMBARRR", "data.data${data?.data}\nbitmap: ${myBitmap as Bitmap}")
+            Log.d("GAMBARRR", "width:\t${myBitmap?.width}\nheight:\t${myBitmap?.height}")
             uploadImage(myBitmap as Bitmap)
+
         }
     }
 
@@ -218,7 +227,6 @@ class ProfileFragment : Fragment() {
             FirebaseStorage.getInstance().reference.child("img/${FirebaseAuth.getInstance().currentUser?.uid}")
         imgBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val image = baos.toByteArray()
-
         ref.putBytes(image).addOnCompleteListener {
             if (it.isSuccessful) {
                 ref.downloadUrl.addOnCompleteListener { task ->
@@ -229,6 +237,7 @@ class ProfileFragment : Fragment() {
                 }
             }
         }
+
     }
 
     companion object {
