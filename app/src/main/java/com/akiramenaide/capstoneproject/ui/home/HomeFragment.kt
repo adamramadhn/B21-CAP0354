@@ -103,11 +103,11 @@ class HomeFragment : Fragment() {
                     var fruitName = myFruit.className
                     var isFresh = false
 
-                    if (fruitName.contains("fresh")) {
-                        fruitName = fruitName.removePrefix("fresh")
+                    if (fruitName.contains("Fresh")) {
+                        fruitName = fruitName.removePrefix("Fresh")
                         isFresh = true
                     } else {
-                        fruitName = fruitName.removePrefix("rotten")
+                        fruitName = fruitName.removePrefix("Rotten")
                     }
 
                     for (element in fruitList) {
