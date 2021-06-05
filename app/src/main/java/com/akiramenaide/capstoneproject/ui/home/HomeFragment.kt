@@ -99,7 +99,7 @@ class HomeFragment : Fragment() {
             var isInDb = false
 
             fruit?.let { myFruit ->
-                if (myFruit.className != "uncategorized") {
+                if (myFruit.className != "Uncategorized") {
                     var fruitName = myFruit.className
                     var isFresh = false
 
