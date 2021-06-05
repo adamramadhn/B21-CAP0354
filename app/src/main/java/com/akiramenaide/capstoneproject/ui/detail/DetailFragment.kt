@@ -17,6 +17,10 @@ import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.PercentFormatter
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import org.koin.android.viewmodel.ext.android.viewModel
 import java.util.*
 
@@ -36,6 +40,26 @@ class DetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val database = FirebaseDatabase.getInstance().reference
+        //GetData
+        val getData = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val sb = StringBuilder()
+                for (i in snapshot.children) {
+                    val fruitQuality = i.child("total").value
+                    val x = i.key
+                    sb.append("Classification:\t${i.key}\n$x Quantity:\t$fruitQuality\n\n")
+                }
+//                fragmentHomeBinding.homepage.tvCoba.text = sb
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        }
+        database.addValueEventListener(getData)
+        database.addListenerForSingleValueEvent(getData)
+
         if (activity != null) {
             pieChart = binding.pieChart
             detailViewModel.fruitList.observe(viewLifecycleOwner, {

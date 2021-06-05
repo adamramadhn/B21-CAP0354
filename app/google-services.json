@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "228235160155",
+    "firebase_url": "https://fir-auth-c11ec-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "fir-auth-c11ec",
     "storage_bucket": "fir-auth-c11ec.appspot.com"
   },

@@ -27,6 +27,10 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import org.koin.android.viewmodel.ext.android.viewModel
 import java.io.ByteArrayOutputStream
 
@@ -53,23 +57,24 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+//        initial cloud database
+//        val  database = FirebaseDatabase.getInstance().reference
+//        hide textview utk melihat hasil db cloud
+        fragmentHomeBinding.homepage.tvCoba.visibility = View.GONE
+        //=====================================
         barChart = fragmentHomeBinding.homepage.barChart
         barChart.visibility = View.GONE
         homeViewModel.getAllFruits().observe(viewLifecycleOwner, {
             fruitList = it
             drawBarChart(fruitList)
         })
-
         fragmentHomeBinding.homepage.btnPickImg.setOnClickListener {
-//            fragmentHomeBinding.predictImg.predictionNumTxt.visibility = View.GONE
-//            fragmentHomeBinding.predictImg.predictionTxt.visibility = View.GONE
             fragmentHomeBinding.viewEmpty.root.visibility = View.GONE
             if (requireActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
                 val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
                 requestPermissions(permissions, PERMISSION_CODE)
             } else {
                 getImage()
-
             }
         }
 
@@ -89,19 +94,20 @@ class HomeFragment : Fragment() {
         }
 
         fragmentHomeBinding.homepage.btnInsertDb.setOnClickListener {
+
             val fruit = fruitInfo
             var isInDb = false
 
             fruit?.let { myFruit ->
-                if (myFruit.className != "unknown"){
+                if (myFruit.className != "Uncategorized") {
                     var fruitName = myFruit.className
                     var isFresh = false
 
-                    if (fruitName.contains("fresh")) {
-                        fruitName = fruitName.removePrefix("fresh")
+                    if (fruitName.contains("Fresh")) {
+                        fruitName = fruitName.removePrefix("Fresh").trim()
                         isFresh = true
                     } else {
-                        fruitName = fruitName.removePrefix("rotten")
+                        fruitName = fruitName.removePrefix("Rotten").trim()
                     }
 
                     for (element in fruitList) {
@@ -112,21 +118,48 @@ class HomeFragment : Fragment() {
                             }
                             isInDb = true
                             homeViewModel.updateFruitInfo(element)
+//                            kirim ke database cloud
+//                            database.child(fruitName.trim())
+//                                .setValue(Fruit("${element.total}","${element.freshTotal}"))
                         }
                     }
 
                     if (!isInDb) {
-                        insertedFruit = Fruit(fruitList.size + 1, fruitName, 1, if (isFresh) 1 else 0)
+                        insertedFruit =
+                            Fruit(fruitList.size + 1, fruitName, 1, if (isFresh) 1 else 0)
                         insertedFruit?.let {
                             homeViewModel.insertFruit(it)
                         }
+//                        kirim ke database cloud
+//                        database.child(fruitName.trim())
+//                            .setValue(Fruit("1","${if (isFresh) 1 else 0}"))
                     }
-                }
-                else{
-                    Toast.makeText(activity,"Data not valid!",Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(activity, "Data not valid!", Toast.LENGTH_SHORT).show()
                 }
             }
         }
+
+//        Get Data from cloud database
+//        //GetData database cloud
+//        val getData = object : ValueEventListener {
+//            override fun onDataChange(snapshot: DataSnapshot) {
+//                val sb = StringBuilder()
+//                for (i in snapshot.children) {
+//                    val jumlah = i.child("total").value
+//                    sb.append("Classification:\t${i.key}\n${i.key} Quantity:\t$jumlah\n\n")
+//                }
+//                fragmentHomeBinding.homepage.tvCoba.text = sb
+//            }
+//
+//            override fun onCancelled(error: DatabaseError) {
+//                TODO("Not yet implemented")
+//            }
+//
+//        }
+//        database.addValueEventListener(getData)
+//        database.addListenerForSingleValueEvent(getData)
+
     }
 
     private fun drawBarChart(fruits: List<Fruit>) {
@@ -184,6 +217,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun getImage() {
+        fragmentHomeBinding.predictImg.root.visibility = View.GONE
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
         startActivityForResult(intent, IMAGE_PICK_CODE)
@@ -228,8 +262,8 @@ class HomeFragment : Fragment() {
                             predictImg.root.visibility = View.VISIBLE
                             viewEmpty.root.visibility = View.GONE
                             predictImg.myImg.setImageBitmap(resizedBitmap)
-                            if (it.data.className.trim() == "unknown") {
-                                fruitInfo = PredictedObject("unknown",0f)
+                            if (it.data.className.trim() == "Uncategorized") {
+                                fruitInfo = PredictedObject("Uncategorized", 0f)
                                 predictImg.predictionNumTxt.visibility = View.GONE
                                 predictImg.predictionTxt.text = getString(R.string.not_iddentified)
                             } else {
@@ -279,9 +313,13 @@ class HomeFragment : Fragment() {
             val img = data?.data
             @Suppress("DEPRECATION")
             myBitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, img)
-            fragmentHomeBinding.predictImg.root.visibility = View.VISIBLE
+            fragmentHomeBinding.predictImg.apply {
+                root.visibility = View.VISIBLE
+                predictionNumTxt.visibility = View.GONE
+                predictionTxt.visibility = View.GONE
+            }
+
             fragmentHomeBinding.predictImg.myImg.apply {
-                visibility = View.VISIBLE
                 setImageBitmap(myBitmap)
             }
             fruitInfo = null
@@ -294,3 +332,5 @@ class HomeFragment : Fragment() {
         const val PERMISSION_CODE = 1001
     }
 }
+
+class Fruit(var total: String, var freshTotal:String)
