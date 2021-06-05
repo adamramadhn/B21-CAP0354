@@ -57,7 +57,11 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val  database = FirebaseDatabase.getInstance().reference
+//        initial cloud database
+//        val  database = FirebaseDatabase.getInstance().reference
+//        hide textview utk melihat hasil db cloud
+        fragmentHomeBinding.homepage.tvCoba.visibility = View.GONE
+        //=====================================
         barChart = fragmentHomeBinding.homepage.barChart
         barChart.visibility = View.GONE
         homeViewModel.getAllFruits().observe(viewLifecycleOwner, {
@@ -65,15 +69,12 @@ class HomeFragment : Fragment() {
             drawBarChart(fruitList)
         })
         fragmentHomeBinding.homepage.btnPickImg.setOnClickListener {
-//            fragmentHomeBinding.predictImg.predictionNumTxt.visibility = View.GONE
-//            fragmentHomeBinding.predictImg.predictionTxt.visibility = View.GONE
             fragmentHomeBinding.viewEmpty.root.visibility = View.GONE
             if (requireActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
                 val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
                 requestPermissions(permissions, PERMISSION_CODE)
             } else {
                 getImage()
-
             }
         }
 
@@ -117,9 +118,9 @@ class HomeFragment : Fragment() {
                             }
                             isInDb = true
                             homeViewModel.updateFruitInfo(element)
-                            //kirim ke database cloud
-                            database.child(fruitName.trim())
-                                .setValue(Fruit("${element.total}","${element.freshTotal}"))
+//                            kirim ke database cloud
+//                            database.child(fruitName.trim())
+//                                .setValue(Fruit("${element.total}","${element.freshTotal}"))
                         }
                     }
 
@@ -129,8 +130,9 @@ class HomeFragment : Fragment() {
                         insertedFruit?.let {
                             homeViewModel.insertFruit(it)
                         }
-                        database.child(fruitName.trim())
-                            .setValue(Fruit("1","${if (isFresh) 1 else 0}"))
+//                        kirim ke database cloud
+//                        database.child(fruitName.trim())
+//                            .setValue(Fruit("1","${if (isFresh) 1 else 0}"))
                     }
                 } else {
                     Toast.makeText(activity, "Data not valid!", Toast.LENGTH_SHORT).show()
@@ -138,24 +140,25 @@ class HomeFragment : Fragment() {
             }
         }
 
-        //GetData
-        val getData = object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val sb = StringBuilder()
-                for (i in snapshot.children) {
-                    val jumlah = i.child("total").value
-                    sb.append("Classification:\t${i.key}\n${i.key} Quantity:\t$jumlah\n\n")
-                }
-                fragmentHomeBinding.homepage.tvCoba.text = sb
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-        }
-        database.addValueEventListener(getData)
-        database.addListenerForSingleValueEvent(getData)
+//        Get Data from cloud database
+//        //GetData database cloud
+//        val getData = object : ValueEventListener {
+//            override fun onDataChange(snapshot: DataSnapshot) {
+//                val sb = StringBuilder()
+//                for (i in snapshot.children) {
+//                    val jumlah = i.child("total").value
+//                    sb.append("Classification:\t${i.key}\n${i.key} Quantity:\t$jumlah\n\n")
+//                }
+//                fragmentHomeBinding.homepage.tvCoba.text = sb
+//            }
+//
+//            override fun onCancelled(error: DatabaseError) {
+//                TODO("Not yet implemented")
+//            }
+//
+//        }
+//        database.addValueEventListener(getData)
+//        database.addListenerForSingleValueEvent(getData)
 
     }
 
@@ -214,6 +217,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun getImage() {
+        fragmentHomeBinding.predictImg.root.visibility = View.GONE
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
         startActivityForResult(intent, IMAGE_PICK_CODE)
@@ -309,9 +313,13 @@ class HomeFragment : Fragment() {
             val img = data?.data
             @Suppress("DEPRECATION")
             myBitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, img)
-            fragmentHomeBinding.predictImg.root.visibility = View.VISIBLE
+            fragmentHomeBinding.predictImg.apply {
+                root.visibility = View.VISIBLE
+                predictionNumTxt.visibility = View.GONE
+                predictionTxt.visibility = View.GONE
+            }
+
             fragmentHomeBinding.predictImg.myImg.apply {
-                visibility = View.VISIBLE
                 setImageBitmap(myBitmap)
             }
             fruitInfo = null
