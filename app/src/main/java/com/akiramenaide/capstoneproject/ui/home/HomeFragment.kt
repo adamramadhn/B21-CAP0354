@@ -262,8 +262,8 @@ class HomeFragment : Fragment() {
                             predictImg.root.visibility = View.VISIBLE
                             viewEmpty.root.visibility = View.GONE
                             predictImg.myImg.setImageBitmap(resizedBitmap)
-                            if (it.data.className.trim() == "uncategorized") {
-                                fruitInfo = PredictedObject("uncategorized", 0f)
+                            if (it.data.className.trim() == "Uncategorized") {
+                                fruitInfo = PredictedObject("Uncategorized", 0f)
                                 predictImg.predictionNumTxt.visibility = View.GONE
                                 predictImg.predictionTxt.text = getString(R.string.not_iddentified)
                             } else {
