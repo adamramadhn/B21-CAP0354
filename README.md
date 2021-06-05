@@ -40,7 +40,11 @@ Helper dependencies used in this app are:
 - Sqlcipher, Sqlite: for database security,
 - MPAndroidChart: to display charts,
 - CircleImageView: to display circle images,
-- Firebase: for firebase implementation,
+- Firebase: 
+  - Authentication
+  - Realtime Database
+  - Crash Analytics
+  - Performance Monitoring
 - Picasso: to display images.
 
 There are two main modules in this android project: the App module and the Core module. The app module will contain most of the UI processes and classes needed for the UI to work, while Core will contain most of the background work.
