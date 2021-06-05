@@ -52,7 +52,7 @@ class ProfileFragment : Fragment() {
             if (userData != null) {
                 userData.reload()
                 if (userData.photoUrl != null) {
-                    Picasso.get().load(userData.photoUrl).placeholder(R.drawable.ic_person).error(R.drawable.ic_person).resize(150,150).into(ivProfile)
+                    Picasso.get().load(userData.photoUrl).placeholder(R.drawable.ic_person).error(R.drawable.ic_person).into(ivProfile)
                 } else {
                     Picasso.get().load("https://picsum.photos/200/300").into(ivProfile)
                 }
