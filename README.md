@@ -1,6 +1,8 @@
 Smart Fruit Analyzer - B21-CAP0354 (Android)
 =
 
+[![adamramadhn](https://circleci.com/gh/adamramadhn/B21-CAP0354.svg?style=shield)](https://circleci.com/gh/adamramadhn/B21-CAP0354)
+
 Team
 -
 - Adam Ramadhan - A1511725
