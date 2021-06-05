@@ -160,12 +160,10 @@ class ProfileFragment : Fragment() {
                         }
                     }
                 }
-                Thread.sleep(1000)
                 if (RELOAD == 1) {
                     profileBinding.apply {
                         icVerified.visibility = View.VISIBLE
                         icUnverified.visibility = View.GONE
-
                     }
                 } else {
                     if (STATUS == 0) {
@@ -215,16 +213,13 @@ class ProfileFragment : Fragment() {
         if (requestCode == IMAGE_PICK_CODE && resultCode == Activity.RESULT_OK) {
             val img = data?.data
             myBitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, img)
-            Log.d("GAMBARRR", "width:\t${myBitmap?.width}\nheight:\t${myBitmap?.height}")
             uploadImage(myBitmap as Bitmap)
-
         }
     }
 
     private fun uploadImage(imgBitmap: Bitmap) {
         val baos = ByteArrayOutputStream()
-        val ref =
-            FirebaseStorage.getInstance().reference.child("img/${FirebaseAuth.getInstance().currentUser?.uid}")
+        val ref = FirebaseStorage.getInstance().reference.child("img/${FirebaseAuth.getInstance().currentUser?.uid}")
         imgBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val image = baos.toByteArray()
         ref.putBytes(image).addOnCompleteListener {
